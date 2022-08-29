@@ -29,8 +29,9 @@ export const deleteVehicle = (req, res) => {
 export const updateVehicle =  (req,res) => {
     const vehicle = vehicles.find((vehicle) => vehicle.id === req.params.id);
     
-    vehicle.vehiclename = req.body.vehiclename;
-    vehicle.age = req.body.age;
+    vehicle.placa = req.body.placa;
+    vehicle.descricao = req.body.descricao;
+    vehicle.capacidadeTanque = req.body.capacidadeTanque;
 
-    console.log(`vehiclename has been updated to ${req.body.vehiclename}.age has been updated to ${req.body.age}`)
+    console.log(`vehicle has been updated`)
 };

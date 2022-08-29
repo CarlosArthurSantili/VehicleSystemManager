@@ -1,11 +1,11 @@
 import { v4 as uuid } from 'uuid';
 
-let gasBombs = [];
+let compras = [];
 
 export const getCompras = (req, res) => {
     console.log(`Compras in the database: ${staffs}`);
 
-    res.send(staffs);
+    res.send(compras);
 }
 
 export const getCompra = (req, res) => {
@@ -25,6 +25,6 @@ export const comprarCombustivel = (req,res) => {
     else
     {
         gasBomb.qtdEstoque += litrosCombustivel;
-        console.log(`gasBombname has been updated to ${req.body.gasBombname}.age has been updated to ${req.body.age}`)
+        console.log(`gasBombname has been updated`)
     }
 };

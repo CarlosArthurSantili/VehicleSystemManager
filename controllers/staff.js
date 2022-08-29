@@ -29,8 +29,8 @@ export const deleteStaff = (req, res) => {
 export const updateStaff =  (req,res) => {
     const staff = staffs.find((staff) => staff.id === req.params.id);
     
-    staff.staffname = req.body.staffname;
-    staff.age = req.body.age;
+    staff.cpf = req.body.cpf;
+    staff.nome = req.body.nome;
 
-    console.log(`staffname has been updated to ${req.body.staffname}.age has been updated to ${req.body.age}`)
+    console.log(`staff has been updated`)
 };

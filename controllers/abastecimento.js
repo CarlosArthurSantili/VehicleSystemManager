@@ -1,11 +1,11 @@
 import { v4 as uuid } from 'uuid';
 
-let gasBombs = [];
+let abastecimentos = [];
 
 export const getAbastecimentos = (req, res) => {
-    console.log(`Abastecimentos in the database: ${staffs}`);
+    console.log(`Abastecimentos in the database: ${abastecimentos}`);
 
-    res.send(staffs);
+    res.send(abastecimentos);
 }
 
 export const getAbastecimento = (req, res) => {
@@ -24,9 +24,15 @@ export const abastecer = (req,res) => {
     }
     else
     {
-        staffs.push({...abastecimento, id: uuid()});
+        abastecimentos.push({...abastecimento, id: uuid()});
         console.log(`Abastecimento [${abastecimento.quantidadeLts}] Litros added to the database.`);
     }
 
     
 };
+
+export const relatorio = (req, res) => {
+    console.log(`Abastecimentos in the database: ${abastecimentos}`);
+
+    res.send(abastecimentos);
+}

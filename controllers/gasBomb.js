@@ -29,8 +29,9 @@ export const deleteGasBomb = (req, res) => {
 export const updateGasBomb =  (req,res) => {
     const gasBomb = gasBombs.find((gasBomb) => gasBomb.id === req.params.id);
     
-    gasBomb.gasBombname = req.body.gasBombname;
-    gasBomb.age = req.body.age;
+    gasBomb.tipoCombustivel = req.body.tipoCombustivel;
+    gasBomb.qtdEstoque = req.body.qtdEstoque;
+    gasBomb.capacidadeBomba = req.body.capacidadeBomba;
 
-    console.log(`gasBombname has been updated to ${req.body.gasBombname}.age has been updated to ${req.body.age}`)
+    console.log(`gasBombname has been updated`)
 };
