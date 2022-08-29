@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { getGasBombs, createGasBomb, getGasBomb, deleteGasBomb, updateGasBomb, comprarCombustivel } from '../controllers/gasBomb.js';
+import { getGasBombs, createGasBomb, getGasBomb, deleteGasBomb, updateGasBomb } from '../controllers/gasBomb.js';
 
 const router = express.Router();
 

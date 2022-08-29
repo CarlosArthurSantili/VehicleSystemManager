@@ -13,18 +13,20 @@ export const getAbastecimento = (req, res) => {
 };
 
 export const abastecer = (req,res) => {
-    const gasBomb = gasBombs.find((gasBomb) => gasBomb.id === req.params.id);
-    const litrosCombustivel = res.body.litrosCombustivel;
+    const abastecimento = req.body;
+    const vehicle = req.bodfind((gasBomb) => gasBomb.id === req.params.id);
 
-    if (litrosCombustivel + gasBomb.qtdEstoque > gasBomb.capacidadeBomba)
+    if (abastecimento.quantidadeLts > vehicle.capacidadeTanque)
     {
         return res.status(400).send({
-            message: 'Valor de combustivel invalido, nao ha capacidade para esse valor de combustivel!'
+            message: 'Quantidade de abastecimento invalido, nao ha capacidade para esse valor de combustivel!'
          });
     }
     else
     {
-        gasBomb.qtdEstoque += litrosCombustivel;
-        console.log(`gasBombname has been updated to ${req.body.gasBombname}.age has been updated to ${req.body.age}`)
+        staffs.push({...abastecimento, id: uuid()});
+        console.log(`Abastecimento [${abastecimento.quantidadeLts}] Litros added to the database.`);
     }
+
+    
 };
