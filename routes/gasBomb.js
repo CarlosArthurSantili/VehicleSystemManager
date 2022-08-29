@@ -1,14 +1,12 @@
 import express from 'express';
 
-import { getGasBombs, createGasBomb, getGasBomb, deleteGasBomb, updateGasBomb } from '../controllers/GasBombs.js';
+import { getGasBombs, createGasBomb, getGasBomb, deleteGasBomb, updateGasBomb, comprarCombustivel } from '../controllers/gasBomb.js';
 
 const router = express.Router();
 
 router.get('/', getGasBombs);
 
 router.post('/', createGasBomb);
-
-router.post('/:id/comprarCombustivel', comprarCombustivel);
 
 router.get('/:id', getGasBomb);
 

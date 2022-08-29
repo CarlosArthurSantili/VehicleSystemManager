@@ -1,14 +1,12 @@
 import express from 'express';
 
-import { getVehicles, createVehicle, getVehicle, deleteVehicle, updateVehicle, abastecerVeiculo } from '../controllers/vehicle.js';
+import { getVehicles, createVehicle, getVehicle, deleteVehicle, updateVehicle } from '../controllers/vehicle.js';
 
 const router = express.Router();
 
 router.get('/', getVehicles);
 
 router.post('/', createVehicle);
-
-router.post('/:id/abastecerVeiculo', abastecerVeiculo);
 
 router.get('/:id', getVehicle);
 

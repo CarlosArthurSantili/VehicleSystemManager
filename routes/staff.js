@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { getStaffs, createStaff, getStaff, deleteStaff, updateStaff } from '../controllers/Staffs.js';
+import { getStaffs, createStaff, getStaff, deleteStaff, updateStaff } from '../controllers/staff.js';
 
 const router = express.Router();
 
