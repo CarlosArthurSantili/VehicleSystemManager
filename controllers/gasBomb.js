@@ -1,36 +1,36 @@
 import { v4 as uuid } from 'uuid';
 
-let users = [];
+let gasBombs = [];
 
-export const getUsers = (req, res) => {
-    console.log(`Users in the database: ${users}`);
+export const getGasBombs = (req, res) => {
+    console.log(`GasBombs in the database: ${gasBombs}`);
 
-    res.send(users);
+    res.send(gasBombs);
 }
 
-export const createUser = (req, res) => {   
-    const user = req.body;
+export const createGasBomb = (req, res) => {   
+    const gasBomb = req.body;
 
-    users.push({...user, id: uuid()});
+    gasBombs.push({...gasBomb, id: uuid()});
     
-    console.log(`User [${user.username}] added to the database.`);
+    console.log(`GasBomb [${gasBomb.gasBombname}] added to the database.`);
 };
 
-export const getUser = (req, res) => {
+export const getGasBomb = (req, res) => {
     res.send(req.params.id)
 };
 
-export const deleteUser = (req, res) => { 
-    console.log(`user with id ${req.params.id} has been deleted`);
+export const deleteGasBomb = (req, res) => { 
+    console.log(`gasBomb with id ${req.params.id} has been deleted`);
     
-    users = users.filter((user) => user.id !== req.params.id);
+    gasBombs = gasBombs.filter((gasBomb) => gasBomb.id !== req.params.id);
 };
 
-export const updateUser =  (req,res) => {
-    const user = users.find((user) => user.id === req.params.id);
+export const updateGasBomb =  (req,res) => {
+    const gasBomb = gasBombs.find((gasBomb) => gasBomb.id === req.params.id);
     
-    user.username = req.body.username;
-    user.age = req.body.age;
+    gasBomb.gasBombname = req.body.gasBombname;
+    gasBomb.age = req.body.age;
 
-    console.log(`username has been updated to ${req.body.username}.age has been updated to ${req.body.age}`)
+    console.log(`gasBombname has been updated to ${req.body.gasBombname}.age has been updated to ${req.body.age}`)
 };

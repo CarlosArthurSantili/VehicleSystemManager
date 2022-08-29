@@ -8,7 +8,7 @@ router.get('/', getGasBombs);
 
 router.post('/', createGasBomb);
 
-router.post('/:id/comprarCombustivel');
+router.post('/:id/comprarCombustivel', comprarCombustivel);
 
 router.get('/:id', getGasBomb);
 
