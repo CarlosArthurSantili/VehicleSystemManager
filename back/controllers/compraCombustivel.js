@@ -13,7 +13,8 @@ export const getCompra = (req, res) => {
 };
 
 export const comprarCombustivel = (req,res) => {
-    const gasBomb = gasBombs.find((gasBomb) => gasBomb.id === req.params.id);
+    const gasBomb = 
+    gasBombs.find((gasBomb) => gasBomb.id === req.params.id);
     const litrosCombustivel = res.body.litrosCombustivel;
 
     if (litrosCombustivel + gasBomb.qtdEstoque > gasBomb.capacidadeBomba)

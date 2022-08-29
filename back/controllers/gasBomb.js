@@ -33,5 +33,5 @@ export const updateGasBomb =  (req,res) => {
     gasBomb.qtdEstoque = req.body.qtdEstoque;
     gasBomb.capacidadeBomba = req.body.capacidadeBomba;
 
-    console.log(`gasBombname has been updated`)
+    console.log(`gasBomb has been updated`)
 };

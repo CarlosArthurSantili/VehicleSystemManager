@@ -33,6 +33,13 @@ export const abastecer = (req,res) => {
 
 export const relatorio = (req, res) => {
     console.log(`Abastecimentos in the database: ${abastecimentos}`);
+    let abastecimentosVeiculo = [];
 
-    res.send(abastecimentos);
+    foreach(abastecimento in abastecimentos)
+    {
+        if(req.idVeiculo === abastecimento.idVeiculo)
+            abastecimentosVeiculo.push(abastecimento);
+    }
+    
+    res.send(abastecimentosVeiculo);
 }
