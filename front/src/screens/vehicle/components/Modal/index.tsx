@@ -2,6 +2,9 @@ import { ChangeEvent, useState } from "react";
 import { Button } from "../../../../components/Button";
 import { Input } from "../../../../components/Input";
 import { Modal } from "../../../../components/Modal";
+import { useVehicles } from "../../../../hooks/useVehicles";
+import { IVehicle } from "../../../../interfaces/vehicle";
+import { createVehicle } from "../../../../services/vehicle";
 
 interface Props {
   onClose(): void;
@@ -22,6 +25,23 @@ export function ModalVehicle({ idVehicle, onClose }: Props) {
   const onChangeInputPlate = (e: ChangeEvent<HTMLInputElement>) => {
     setPlate(e.target.value);
   };
+
+  const {refreshVehicles} = useVehicles();
+
+  const HandleCreateVehicle = async () => {
+    const data:IVehicle = {
+      capacidadeTanque: Number(capacity),
+      descricao:name,
+      placa:plate,
+    } as IVehicle; 
+  const response =  await createVehicle(data)
+  if(response){
+  
+      refreshVehicles()
+      onClose()
+     
+  }
+  }
 
   return (
     <Modal
@@ -77,7 +97,11 @@ export function ModalVehicle({ idVehicle, onClose }: Props) {
           <Button
             type="button"
             style={{ width: "100%", marginTop: 20, marginBottom: 20 }}
-            onClick={() => {}}
+            onClick={() => {
+              if(idVehicle){}
+              else
+              HandleCreateVehicle()
+            }}
           >
             {idVehicle ? "Editar" : "Cadastrar"}
           </Button>

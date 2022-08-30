@@ -22,7 +22,8 @@ const VehicleProvider: React.FC<Props> = ({ children }: Props) => {
   const refreshVehicles = async () => {
     setLoading(true);
     const response = await getVehicles()
-    setData(response?.data.vehicles);
+    console.log(response)
+    setData(response?.data.vehicle);
     setLoading(false);
   };
 
