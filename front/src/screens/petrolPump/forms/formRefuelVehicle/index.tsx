@@ -1,11 +1,18 @@
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { Button } from "../../../../components/Button";
 import { Input } from "../../../../components/Input";
 import { Select } from "../../../../components/Select";
+import { useEmployee } from "../../../../hooks/useEmployee";
+import { useVehicles } from "../../../../hooks/useVehicles";
 import { IEmployee } from "../../../../interfaces/employee";
 import { IVehicle } from "../../../../interfaces/vehicle";
+import { refuelVehicleAPI } from "../../../../services/vehicle";
 
-export function FormRefuelVehicle() {
+interface Props {
+  callback(): void
+  idPetrolPump?: number;
+}
+export function FormRefuelVehicle({ idPetrolPump, callback }: Props) {
   const [employer, setEmployeer] = useState<string>("");
   const [vehicle, setVehicle] = useState<string>("");
   const [refuel, setRefuel] = useState<string>("");
@@ -20,21 +27,42 @@ export function FormRefuelVehicle() {
     if (e.target.value.length < 6) setRefuel(e.target.value);
   };
 
-  const employees: IEmployee[] = [];
+  const { data: employees, refreshEmployees } = useEmployee();
+  const { data: vehicles, refreshVehicles } = useVehicles();
 
   const optionsSelectEmployees = useMemo(() => {
-    return employees.map((x) => {
+    setEmployeer(String(employees?employees[0]?.idFuncionario:''))
+    return employees?.map((x) => {
       return { id: x.idFuncionario, name: x.nome };
     });
   }, [employees]);
 
-  const vehicles: IVehicle[] = [];
-
   const optionsSelectVehicles = useMemo(() => {
-    return vehicles.map((x) => {
+    setVehicle(String(vehicles?vehicles[0]?.idVeiculo:''))
+    return vehicles?.map((x) => {
       return { id: x.idVeiculo, name: x.placa };
     });
   }, [vehicles]);
+
+  useEffect(() => {
+    refreshEmployees();
+    refreshVehicles();
+  }, []);
+
+  async function RefuelVehicle() {
+    if(idPetrolPump){
+      const response = await refuelVehicleAPI({
+         idBomba: idPetrolPump,
+         idFuncionario: Number(employer),
+         idVeiculo: Number(vehicle),
+         quantidadeLts: Number(refuel),
+       });
+       if(response?.data.success){
+         alert(response?.data.message)
+         callback()
+       }
+    }
+  }
   return (
     <div className="group">
       <div className="groupInputs">
@@ -65,7 +93,7 @@ export function FormRefuelVehicle() {
       <Button
         type="button"
         style={{ width: "100%", marginTop: 20, marginBottom: 20 }}
-        onClick={() => {}}
+        onClick={RefuelVehicle}
       >
         Abastecer
       </Button>

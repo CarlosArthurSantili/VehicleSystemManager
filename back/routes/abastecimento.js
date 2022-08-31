@@ -1,15 +1,9 @@
-import express from 'express';
+import express from "express";
 
-import { getAbastecimento, getAbastecimentos, abastecer, relatorio } from '../controllers/abastecimento.js';
+import { abastecer } from "../controllers/vehicle.js";
 
 const router = express.Router();
 
-router.get('/:id', getAbastecimento);
-
-router.get('/', getAbastecimentos);
-
-router.get('/relatorio', relatorio);
-
-router.post('/', abastecer);
+router.post("/", abastecer);
 
 export default router;

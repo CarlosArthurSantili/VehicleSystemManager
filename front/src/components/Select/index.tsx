@@ -3,7 +3,7 @@ import { SelectHTMLAttributes } from "react";
 
 interface PropsSelect extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
-  options?: { id: number; name: string }[];
+  options?: { id: number | string; name: string }[];
 }
 
 export function Select(props: PropsSelect) {

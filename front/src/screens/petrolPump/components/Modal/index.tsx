@@ -7,10 +7,11 @@ import { FormRefuelPetrolPump } from "./../../forms/formRefuelPetrolPump/index";
 
 interface Props {
   onClose(): void;
+  onRefresh(): void;
   idPetrolPump?: number;
 }
 
-export function ModalPetrolPump({ idPetrolPump, onClose }: Props) {
+export function ModalPetrolPump({ idPetrolPump, onClose, onRefresh }: Props) {
   //states
   const [infosPetrolPumpVisible, setInfosPetrolPumpVisible] = useState(
     false || !idPetrolPump
@@ -44,6 +45,11 @@ export function ModalPetrolPump({ idPetrolPump, onClose }: Props) {
     setRefuelPetrolPumpVisible(false);
   }, []);
 
+  const successEvent = useCallback(() => {
+    onRefresh();
+    onClose();
+  }, []);
+
   return (
     <Modal
       title={title || "O que deseja fazer?"}
@@ -52,10 +58,13 @@ export function ModalPetrolPump({ idPetrolPump, onClose }: Props) {
     >
       <>
         {infosPetrolPumpVisible && (
-          <InfosPetrolPump idPetrolPump={idPetrolPump} />
+          <InfosPetrolPump
+            callback={successEvent}
+            idPetrolPump={idPetrolPump}
+          />
         )}
-        {refuelVehicleVisible && <FormRefuelVehicle />}
-        {refuelPetrolPumpVisible && <FormRefuelPetrolPump />}
+        {refuelVehicleVisible && <FormRefuelVehicle idPetrolPump={idPetrolPump}  callback={successEvent}/>}
+        {refuelPetrolPumpVisible && <FormRefuelPetrolPump idPetrolPump={idPetrolPump} callback={successEvent}/>}
         {!buttonsVisible && (
           <div
             style={{

@@ -3,12 +3,14 @@ import Decoration from "../../assets/decoration.svg";
 
 import { Body, Container, WrapperTitle } from "./styles";
 import { Table } from "../../components/Tables/TablePetrolPump";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ModalPetrolPump } from "./components/Modal";
 import { IPetrolPump } from "../../interfaces/petrolPump";
+import { getPetrolPumps } from "../../services/petrolPump";
 
 export function PetrolPump() {
   const [visibleModal, setVisibleModal] = useState<boolean>(false);
+  const [data, setData] = useState<IPetrolPump[]>();
   const [currentPetrolPump, setCurrentPetrolPump] = useState<number>();
 
   const handlePetrolPumpEditClick = (id: number) => {
@@ -20,27 +22,25 @@ export function PetrolPump() {
     setVisibleModal(false);
     setCurrentPetrolPump(undefined);
   };
-  const petrolPumps: IPetrolPump[] = [
-    {
-      idBomba: 1,
-      capacidadeBomba: 200,
-      qtdEstoque: 25,
-      tipoCombustivel: { idGasolina: 1, nome: "Diesel" },
-    },
-    {
-      idBomba: 2,
-      capacidadeBomba: 235,
-      qtdEstoque: 150,
-      tipoCombustivel: { idGasolina: 2, nome: "Etanol" },
-    },
-    
-  ];
+
+  const SetCurrentPetrolPump = useCallback(async () => {
+    const response = await getPetrolPumps();
+    const dataAux = response?.data?.gasBomb as IPetrolPump[];
+    console.log(dataAux);
+    setData(dataAux);
+  }, []);
+
+  useEffect(() => {
+    SetCurrentPetrolPump();
+  }, [SetCurrentPetrolPump]);
+
   return (
     <Container>
       <Header visibleSearch={false} />
       <img className="imgDecoration" alt="decoration" src={Decoration} />
       {visibleModal && (
         <ModalPetrolPump
+          onRefresh={SetCurrentPetrolPump}
           onClose={onModalClose}
           idPetrolPump={currentPetrolPump}
         />
@@ -59,7 +59,7 @@ export function PetrolPump() {
             Cadastrar Bomba
           </button>
         </WrapperTitle>
-        <Table petrolPumps={petrolPumps} callback={handlePetrolPumpEditClick} />
+        <Table petrolPumps={data} callback={handlePetrolPumpEditClick} />
       </Body>
     </Container>
   );

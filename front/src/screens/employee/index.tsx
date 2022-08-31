@@ -3,8 +3,10 @@ import Decoration from "../../assets/decoration.svg";
 
 import { Body, Container, WrapperTitle } from "./styles";
 import { Table } from "../../components/Tables/TableEmployee";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ModalEmployee } from "./components/Modal";
+import { useEmployee } from "../../hooks/useEmployee";
+import { Loader } from "../../components/Loader";
 
 export function Employee() {
   const [visibleModal, setVisibleModal] = useState<boolean>(false);
@@ -19,23 +21,20 @@ export function Employee() {
     setVisibleModal(false);
     setCurrentEmployee(undefined);
   };
-  const employees = [
-    {
-      idFuncionario:1,
-      nome:'Christopher Marim',
-      cpf:'16514119727'
-    },
-    {
-      idFuncionario:2,
-      nome:'Geovanna Antonello',
-      cpf:'16548913242'
-    },
-  ];
+
+  const { refreshEmployees, data, loading } = useEmployee();
+
+  useEffect(() => {
+    refreshEmployees();
+  }, []);
+
   return (
     <Container>
       <Header visibleSearch={false} />
       <img className="imgDecoration" alt="decoration" src={Decoration} />
-      {visibleModal && <ModalEmployee onClose={onModalClose} idEmployee={currentEmployee} />}
+      {visibleModal && (
+        <ModalEmployee onClose={onModalClose} idEmployee={currentEmployee} />
+      )}
 
       <Body>
         <WrapperTitle>
@@ -50,7 +49,8 @@ export function Employee() {
             Cadastrar Funcionário
           </button>
         </WrapperTitle>
-        <Table employees={employees} callback={handleEmployeeEditClick} />
+        <Table employees={data} callback={handleEmployeeEditClick} />
+        {loading && <Loader />}
       </Body>
     </Container>
   );

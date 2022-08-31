@@ -1,14 +1,21 @@
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "../../../../components/Button";
 import { Input } from "../../../../components/Input";
 import { Select } from "../../../../components/Select";
-import { ITypeGasoline } from "../../../../interfaces/petrolPump";
+import { IPetrolPump, ITypeGasoline } from "../../../../interfaces/petrolPump";
+import {
+  createPetrolPump,
+  deletePetrolPump,
+  getPetrolPump,
+  updatePetrolPump,
+} from "../../../../services/petrolPump";
 
 interface Props {
   idPetrolPump?: number;
+  callback(): void;
 }
-export function InfosPetrolPump({ idPetrolPump }: Props) {
-  const [typeGasoline, setTypeGasoline] = useState<string>("");
+export function InfosPetrolPump({ idPetrolPump, callback }: Props) {
+  const [typeGasoline, setTypeGasoline] = useState<string>("Etanol");
   const [capacityPump, setCapacityPump] = useState<string>("");
   const [storagePump, setStoragePump] = useState<string>("");
 
@@ -24,8 +31,10 @@ export function InfosPetrolPump({ idPetrolPump }: Props) {
 
   const typesGasoline: ITypeGasoline[] = useMemo(() => {
     return [
-      { idGasolina: 1, nome: "etanol" },
-      { idGasolina: 2, nome: "Diesel" },
+      { idGasolina: "Etanol", nome: "Etanol" },
+      { idGasolina: "Diesel", nome: "Diesel" },
+      { idGasolina: "Gasolina Comum", nome: "Gasolina Comum" },
+      { idGasolina: "Gasolina Adtivada", nome: "Gasolina Adtivada" },
     ];
   }, []);
 
@@ -34,6 +43,68 @@ export function InfosPetrolPump({ idPetrolPump }: Props) {
       return { id: x.idGasolina, name: x.nome };
     });
   }, [typesGasoline]);
+
+  const HandleCreatePetrolPump = async () => {
+    if (Number(capacityPump) >= Number(storagePump)) {
+      let data: IPetrolPump = {
+        capacidadeBomba: Number(capacityPump),
+        qtdEstoque: Number(storagePump),
+        tipoCombustivel: typeGasoline,
+      } as IPetrolPump;
+      const response = await createPetrolPump(data);
+      if (response?.data.success) {
+        callback();
+      }
+    } else {
+      alert("Capacidade da bomba deve ser menor que a quantidade de estoque!");
+    }
+  };
+
+  const SetCurrentPetrolPump = useCallback(async () => {
+    if (idPetrolPump) {
+      const response = await getPetrolPump(idPetrolPump);
+      console.log(response);
+      const gasBomb = response?.data?.gasBomb;
+
+      setTypeGasoline(String(gasBomb?.tipoCombustivel) || "");
+      setCapacityPump(String(gasBomb?.capacidadeBomba) || "");
+      setStoragePump(String(gasBomb?.qtdEstoque) || "");
+    }
+  }, [idPetrolPump]);
+
+  const DeleteCurrentPetrolPump = useCallback(async () => {
+    if (idPetrolPump) {
+      const response = await deletePetrolPump(idPetrolPump);
+      if (response?.data.success) {
+        callback();
+        alert("Deletado com sucesso");
+      }
+    }
+  }, [idPetrolPump]);
+
+  const UpdateCurrentPetrolPump = async () => {
+    if (idPetrolPump) {
+      if (Number(capacityPump) >= Number(storagePump)) {
+        const response = await updatePetrolPump(idPetrolPump, {
+          capacidadeBomba: Number(capacityPump),
+          qtdEstoque: Number(storagePump),
+          tipoCombustivel: typeGasoline,
+        } as IPetrolPump);
+        if (response?.data.success) {
+          callback();
+          alert("Editado com sucesso");
+        }
+      } else {
+        alert(
+          "Capacidade da bomba deve ser menor que a quantidade de estoque!"
+        );
+      }
+    }
+  };
+
+  useEffect(() => {
+    SetCurrentPetrolPump();
+  }, [SetCurrentPetrolPump]);
 
   return (
     <div className="group">
@@ -75,7 +146,7 @@ export function InfosPetrolPump({ idPetrolPump }: Props) {
               backgroundColor: "transparent",
               color: "gray",
             }}
-            onClick={() => {}}
+            onClick={DeleteCurrentPetrolPump}
           >
             Excluir
           </Button>
@@ -83,7 +154,13 @@ export function InfosPetrolPump({ idPetrolPump }: Props) {
         <Button
           type="button"
           style={{ width: "100%", marginTop: 20, marginBottom: 20 }}
-          onClick={() => {}}
+          onClick={() => {
+            if (idPetrolPump) {
+              UpdateCurrentPetrolPump();
+            } else {
+              HandleCreatePetrolPump();
+            }
+          }}
         >
           {idPetrolPump ? "Editar" : "Cadastrar"}
         </Button>

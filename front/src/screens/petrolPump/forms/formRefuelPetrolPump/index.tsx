@@ -1,8 +1,14 @@
 import { ChangeEvent, useState } from "react";
 import { Button } from "../../../../components/Button";
 import { Input } from "../../../../components/Input";
+import { refuelPetrolPump } from "../../../../services/petrolPump";
 
-export function FormRefuelPetrolPump() {
+interface Props {
+  callback():void
+  idPetrolPump?: number;
+}
+
+export function FormRefuelPetrolPump({idPetrolPump, callback}:Props) {
   const [refuel, setRefuel] = useState<string>("");
   const [price, setPrice] = useState<string>("");
 
@@ -13,6 +19,20 @@ export function FormRefuelPetrolPump() {
   const onChangeInputPrice = (e: ChangeEvent<HTMLInputElement>) => {
     setPrice(e.target.value);
   };
+
+  async function RefuelPetrolPump() {
+    if(idPetrolPump){
+      const response = await refuelPetrolPump(idPetrolPump,{
+         idBomba: idPetrolPump,
+         quantidadeLts: Number(refuel),
+         preco:Number(price),
+       });
+       if(response?.data.success){
+         alert(response?.data.message)
+         callback()
+       }
+    }
+  }
 
   return (
     <div className="group">
@@ -39,7 +59,7 @@ export function FormRefuelPetrolPump() {
       <Button
         type="button"
         style={{ width: "100%", marginTop: 20, marginBottom: 20 }}
-        onClick={() => {}}
+        onClick={RefuelPetrolPump}
       >
         Abastecer
       </Button>

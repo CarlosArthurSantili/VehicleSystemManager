@@ -1,10 +1,15 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "../../../../components/Button";
 import { Input } from "../../../../components/Input";
 import { Modal } from "../../../../components/Modal";
 import { useVehicles } from "../../../../hooks/useVehicles";
 import { IVehicle } from "../../../../interfaces/vehicle";
-import { createVehicle } from "../../../../services/vehicle";
+import {
+  createVehicle,
+  deleteVehicle,
+  getVehicle,
+  updateVehicle,
+} from "../../../../services/vehicle";
 
 interface Props {
   onClose(): void;
@@ -26,22 +31,61 @@ export function ModalVehicle({ idVehicle, onClose }: Props) {
     setPlate(e.target.value);
   };
 
-  const {refreshVehicles} = useVehicles();
+  const { refreshVehicles } = useVehicles();
 
   const HandleCreateVehicle = async () => {
-    const data:IVehicle = {
+    let data: IVehicle = {
       capacidadeTanque: Number(capacity),
-      descricao:name,
-      placa:plate,
-    } as IVehicle; 
-  const response =  await createVehicle(data)
-  if(response){
-  
-      refreshVehicles()
-      onClose()
-     
-  }
-  }
+      descricao: name,
+      placa: plate,
+    } as IVehicle;
+    const response = await createVehicle(data);
+    if (response?.data.success) {
+      refreshVehicles();
+      onClose();
+    }
+  };
+  const SetCurrentVehicle = useCallback(async () => {
+    if (idVehicle) {
+      const response = await getVehicle(idVehicle);
+      console.log(response);
+      const vehicle = response?.data?.vehicle;
+
+      setName(vehicle?.descricao || "");
+      setCapacity(String(vehicle?.capacidadeTanque) || "");
+      setPlate(vehicle?.placa || "");
+    }
+  }, [idVehicle]);
+
+  const DeleteCurrentVehicle = useCallback(async () => {
+    if (idVehicle) {
+      const response = await deleteVehicle(idVehicle);
+      if (response?.data.success) {
+        refreshVehicles();
+        onClose();
+        alert("Deletado com sucesso");
+      }
+    }
+  }, [idVehicle]);
+
+  const UpdateCurrentVehicle = async () => {
+    if (idVehicle) {
+      const response = await updateVehicle(idVehicle, {
+        descricao: name,
+        capacidadeTanque: Number(capacity),
+        placa: plate,
+      } as IVehicle);
+      if (response?.data.success) {
+        refreshVehicles();
+        onClose();
+        alert("Editado com sucesso");
+      }
+    }
+  };
+
+  useEffect(() => {
+    SetCurrentVehicle();
+  }, [SetCurrentVehicle]);
 
   return (
     <Modal
@@ -78,7 +122,7 @@ export function ModalVehicle({ idVehicle, onClose }: Props) {
             style={{ width: "100%" }}
           />
         </div>
-        <div style={{ display: "flex"}}>
+        <div style={{ display: "flex" }}>
           {idVehicle && (
             <Button
               type="button"
@@ -87,9 +131,9 @@ export function ModalVehicle({ idVehicle, onClose }: Props) {
                 marginTop: 20,
                 marginBottom: 20,
                 backgroundColor: "transparent",
-                color:'gray'
+                color: "gray",
               }}
-              onClick={() => {}}
+              onClick={DeleteCurrentVehicle}
             >
               Excluir
             </Button>
@@ -98,9 +142,9 @@ export function ModalVehicle({ idVehicle, onClose }: Props) {
             type="button"
             style={{ width: "100%", marginTop: 20, marginBottom: 20 }}
             onClick={() => {
-              if(idVehicle){}
-              else
-              HandleCreateVehicle()
+              if (idVehicle) {
+                UpdateCurrentVehicle();
+              } else HandleCreateVehicle();
             }}
           >
             {idVehicle ? "Editar" : "Cadastrar"}
